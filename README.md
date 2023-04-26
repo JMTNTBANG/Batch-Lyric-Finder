@@ -23,5 +23,7 @@ In order to use the script, you will need to create an account on **[genius.com]
 Once you have done that, you will need to copy the access token and paste it into a .env file in the top directory. Make sure the file contains the following:
 
 ```bash
-TOKEN={YOUR ACCESS TOKEN HERE}
+ACCESS_TOKEN={YOUR ACCESS TOKEN HERE}
 ```
+
+## If you do not know how to do any of this, an installer will be provided to set up all the dependencies for you
