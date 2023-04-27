@@ -16,6 +16,7 @@ supported_formats = (
     'wav',
     'wv'
 )
+illegal_characters = '#%&{}\\<>*?/$!:@+`|='
 
 load_dotenv()
 token = getenv('ACCESS_TOKEN')
@@ -60,7 +61,14 @@ def get_lyrics(music_directory):
                         directory += f'CD {song["discnumber"]}/'
                     while True:
                         try:
-                            file = open(f'{directory}{song["tracknumber"]} {song["tracktitle"]}', 'w')
+                            file_name = f'{song["tracktitle"]}'
+                            final_name = ''
+                            for i in file_name:
+                                if i in illegal_characters:
+                                    final_name += '_'
+                                else:
+                                    final_name += i
+                            file = open(f'{directory}{song["tracknumber"]} {final_name}', 'w')
                         except FileNotFoundError:
                             os.makedirs(directory)
                         else:
