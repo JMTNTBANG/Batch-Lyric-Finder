@@ -1,3 +1,7 @@
+import sys
+import time
+
+import requests.exceptions
 from dotenv import load_dotenv
 from os import getenv
 from lyricsgenius import Genius
@@ -16,6 +20,7 @@ supported_formats = (
     'wav',
     'wv'
 )
+illegal_characters = '#%&{}\\<>*?/$!:@+`|='
 
 load_dotenv()
 token = getenv('ACCESS_TOKEN')
@@ -50,23 +55,39 @@ def get_lyrics(music_directory):
         if os.path.isfile(music_directory+'/'+file):
             if file.endswith(supported_formats):
                 song = music_tag.load_file(music_directory+'/'+file)
-                try:
-                    lyrics = genius.search_song(str(song['tracktitle']), str(song['artist'])).lyrics
-                except AttributeError:
-                    print('Skipping...')
-                else:
-                    directory = f'{lyric_directory}/{song["artist"]}/{song["album"]}/'
-                    if int(song['totaldiscs']) > 1:
-                        directory += f'CD {song["discnumber"]}/'
-                    while True:
-                        try:
-                            file = open(f'{directory}{song["tracknumber"]} {song["tracktitle"]}', 'w')
-                        except FileNotFoundError:
-                            os.makedirs(directory)
-                        else:
-                            file.write(lyrics)
-                            file.close()
-                            break
+                while True:
+                    try:
+                        lyrics = genius.search_song(str(song['tracktitle']), str(song['artist'])).lyrics
+                    except AttributeError:
+                        print('Skipping...')
+                        break
+                    except requests.exceptions.Timeout:
+                        print('Connection Timed out, trying again in 5 seconds')
+                        time.sleep(5)
+                    except requests.exceptions.ConnectionError:
+                        print('No Connection Detected, Please make sure you are connected to the internet')
+                        sys.exit()
+                    else:
+                        directory = f'{lyric_directory}/{song["artist"]}/{song["album"]}/'
+                        if int(song['totaldiscs']) > 1:
+                            directory += f'CD {song["discnumber"]}/'
+                        while True:
+                            try:
+                                file_name = f'{song["tracktitle"]}'
+                                final_name = ''
+                                for i in file_name:
+                                    if i in illegal_characters:
+                                        final_name += '_'
+                                    else:
+                                        final_name += i
+                                file = open(f'{directory}{song["tracknumber"]} {final_name}', 'w')
+                            except FileNotFoundError:
+                                os.makedirs(directory)
+                            else:
+                                file.write(lyrics)
+                                file.close()
+                                break
+                        break
         else:
             print(f'Checking Sub-Directory \"{file}\"')
             get_lyrics(music_directory+'/'+file)
