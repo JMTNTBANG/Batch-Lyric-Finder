@@ -64,6 +64,9 @@ def get_lyrics(music_directory):
                     except requests.exceptions.Timeout:
                         print('Connection Timed out, trying again in 5 seconds')
                         time.sleep(5)
+                    except requests.exceptions.ConnectionError:
+                        print('No Connection Detected, Please make sure you are connected to the internet')
+                        sys.exit()
                     else:
                         directory = f'{lyric_directory}/{song["artist"]}/{song["album"]}/'
                         if int(song['totaldiscs']) > 1:
