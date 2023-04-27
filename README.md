@@ -14,6 +14,7 @@ Have the following installed on your system:
 Using **[Pip](https://pip.pypa.io/en/stable/installation/)**, please install the following packages: 
 
 1. **[lyricsgenius](https://pypi.org/project/lyricsgenius/)**
+2. **[music-tag](https://pypi.org/project/music-tag/)**
 2. **[python-dotenv](https://pypi.org/project/python-dotenv/)**
 
 ## Configuration
