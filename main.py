@@ -49,6 +49,8 @@ for file in os.listdir(music_directory):
         song = music_tag.load_file(music_directory+'/'+file)
         lyrics = genius.search_song(str(song['tracktitle']), str(song['artist'])).lyrics
         directory = f'{lyric_directory}/{song["artist"]}/{song["album"]}/'
+        if int(song['totaldiscs']) > 1:
+            directory += f'CD {song["discnumber"]}/'
         while True:
             try:
                 file = open(f'{directory}{song["tracknumber"]} {song["tracktitle"]}', 'w')
