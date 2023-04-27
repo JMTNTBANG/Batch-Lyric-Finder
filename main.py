@@ -50,19 +50,23 @@ def get_lyrics(music_directory):
         if os.path.isfile(music_directory+'/'+file):
             if file.endswith(supported_formats):
                 song = music_tag.load_file(music_directory+'/'+file)
-                lyrics = genius.search_song(str(song['tracktitle']), str(song['artist'])).lyrics
-                directory = f'{lyric_directory}/{song["artist"]}/{song["album"]}/'
-                if int(song['totaldiscs']) > 1:
-                    directory += f'CD {song["discnumber"]}/'
-                while True:
-                    try:
-                        file = open(f'{directory}{song["tracknumber"]} {song["tracktitle"]}', 'w')
-                    except FileNotFoundError:
-                        os.makedirs(directory)
-                    else:
-                        file.write(lyrics)
-                        file.close()
-                        break
+                try:
+                    lyrics = genius.search_song(str(song['tracktitle']), str(song['artist'])).lyrics
+                except AttributeError:
+                    print('Skipping...')
+                else:
+                    directory = f'{lyric_directory}/{song["artist"]}/{song["album"]}/'
+                    if int(song['totaldiscs']) > 1:
+                        directory += f'CD {song["discnumber"]}/'
+                    while True:
+                        try:
+                            file = open(f'{directory}{song["tracknumber"]} {song["tracktitle"]}', 'w')
+                        except FileNotFoundError:
+                            os.makedirs(directory)
+                        else:
+                            file.write(lyrics)
+                            file.close()
+                            break
         else:
             print(f'Checking Sub-Directory \"{file}\"')
             get_lyrics(music_directory+'/'+file)
