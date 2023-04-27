@@ -1,7 +1,21 @@
 from dotenv import load_dotenv
 from os import getenv
 from lyricsgenius import Genius
+import music_tag
 import os
+
+supported_formats = (
+    'aac',
+    'aiff',
+    'dsf',
+    'flac',
+    'm4a',
+    'mp3',
+    'ogg',
+    'opus',
+    'wav',
+    'wv'
+)
 
 load_dotenv()
 token = getenv('ACCESS_TOKEN')
@@ -30,3 +44,7 @@ while True:
     else:
         break
 
+for file in os.listdir(music_directory):
+    if file.endswith(supported_formats):
+        song = music_tag.load_file(music_directory+'/'+file)
+        lyrics = genius.search_song(str(song['tracktitle']), str(song['artist'])).lyrics
