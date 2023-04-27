@@ -21,3 +21,12 @@ while True:
     else:
         break
 
+while True:
+    lyric_directory = input('Please enter the output directory of the lyrics: ')
+    try:
+        os.listdir(lyric_directory)
+    except Exception as exception:
+        print(exception)
+    else:
+        break
+
