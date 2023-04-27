@@ -48,6 +48,13 @@ for file in os.listdir(music_directory):
     if file.endswith(supported_formats):
         song = music_tag.load_file(music_directory+'/'+file)
         lyrics = genius.search_song(str(song['tracktitle']), str(song['artist'])).lyrics
-        file = open(f'{lyric_directory}/{song["artist"]}/{song["album"]}/{song["tracktitle"]}', "w")
-        file.write(lyrics)
-        file.close()
+        directory = f'{lyric_directory}/{song["artist"]}/{song["album"]}/'
+        while True:
+            try:
+                file = open(f'{directory}{song["tracknumber"]} {song["tracktitle"]}', 'w')
+            except FileNotFoundError:
+                os.makedirs(directory)
+            else:
+                file.write(lyrics)
+                file.close()
+                break
